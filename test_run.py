@@ -9,6 +9,7 @@
 # The dotenv library (https://pypi.org/project/python-dotenv/) is used for loading variables from a .env file into the environment.
 import requests
 import os
+import json
 from dotenv import load_dotenv
 
 
@@ -27,6 +28,7 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
 
+
 # The requests.post() function is used to make a POST request to the API endpoint to obtain an access token.
 
 
@@ -37,6 +39,9 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 # The grant_type parameter is set to "client_credentials" to indicate that we are using our own credentials.
 # The scope parameter is set to "mcommunitygroups" to specify which resource we want to access.
 # The auth parameter is set to a tuple containing the CLIENT_ID and CLIENT_SECRET variables to provide authentication credentials.
+print(CLIENT_ID)
+print(CLIENT_SECRET)
+
 response = requests.post(
     "https://gw.api.it.umich.edu/um/oauth2/token",
     data={"grant_type": "client_credentials", "scope": "mcommunitygroups"},
@@ -68,7 +73,14 @@ def get_members(group):
 # The response text is returned by the function.
 
 
-    response = requests.get(members_url, headers=headers)
+    response = requests.get(members_url, 
+        headers = headers)
 
 
-    return response.text
+    #print(response.json())
+
+    #cleaner format compared to one big list
+    print(json.dumps(response.json(), separators=(",",":"), indent=4))
+
+
+get_members("Michigan Badminton Club")
