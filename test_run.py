@@ -44,7 +44,7 @@ print(CLIENT_SECRET)
 
 response = requests.post(
     "https://gw.api.it.umich.edu/um/oauth2/token",
-    data={"grant_type": "client_credentials", "scope": "mcommunitygroups"},
+    data={"grant_type": "client_credentials", "scope": "studentaffiliation"},
     auth=(CLIENT_ID, CLIENT_SECRET)
 )
 
@@ -62,25 +62,39 @@ token = response.json()["access_token"]
 # The URL for the group members API endpoint is constructed using an f-string.
 # The Authorization header is set to include the access token in a Bearer token format.
 # The Accept header is set to "application/json" to indicate that the client expects a JSON response.
-def get_members(group):
-    members_url = f"https://gw.api.it.umich.edu/um/MCommunityGroups/Members/{group}"
+def get_members(id1):
+    #members_url = f"https://gw.api.it.umich.edu/um/MCommunityGroups/Members/{group}"
+    #members_url = f"https://gw.api.it.umich.edu/um/mcomm-person/find/{id1}"
+    members_url = f"https://gw.api.it.umich.edu/um/studentrecords/Affiliation"
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/json"
+    }
+    parameters = {
+        "prompt_fieldvalue": {id1}
     }
 # Finally, the requests.get() method is used to make a GET request to the group members API endpoint.
 # The headers dictionary is passed as an argument to provide the authorization and accept headers.
 # The response text is returned by the function.
 
 
-    response = requests.get(members_url, 
-        headers = headers)
+    response = requests.get(members_url, headers = headers, params=parameters)
 
-
+    #print(response.text)
     #print(response.json())
 
     #cleaner format compared to one big list
-    print(json.dumps(response.json(), separators=(",",":"), indent=4))
+    print(json.dumps(response.json(), separators=(",",":"), indent=1))
+
+my_list = ["hysun", "jmfree"]
+my_list2 = ["dmudie",
+"ahorning",
+"jparisea",
+"jcallew",
+"cprincen",
+"aberki",
+]
 
 
-get_members("Michigan Badminton Club")
+for i in my_list2:
+    get_members(i) #figure out how to input a list of names from the Google Sheet
