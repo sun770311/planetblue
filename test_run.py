@@ -86,14 +86,7 @@ def get_members(id1):
     #cleaner format compared to one big list
     print(json.dumps(response.json(), separators=(",",":"), indent=1))
 
-my_list = ["hysun", "jmfree"]
-my_list2 = ["dmudie",
-"ahorning",
-"jparisea",
-"jcallew",
-"cprincen",
-"aberki",
-]
+my_list2 = ["hysun"]
 
 
 for i in my_list2:
