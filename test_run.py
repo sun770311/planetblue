@@ -13,6 +13,7 @@ import json
 from dotenv import load_dotenv
 
 
+
 # The load_dotenv() function is called to load environment variables from a .env file.
 
 
@@ -83,23 +84,20 @@ def get_members(id1):
     #print(response.text)
     #print(response.json())
 
-    #cleaner format compared to one big list
-    print(json.dumps(response.json(), separators=(",",":"), indent=2))
+    #prints entire API response
+    #print(json.dumps(response.json(), separators=(",",":"), indent=2))
 
-my_list2 = ["crvaughn",
-"denisev",
-"westce",
-"srwisbis",
-"alviny",
-"tjmcewen",
-"cpeffer",
-"kaylamt",
-"capasb",
-"csarosh",
-"atambral",
-"uiloahc",
-"crysenga",]
+    #we only want the information inside of rows- QUESTION: do we want to rewrite for every
+    #single piece of personal information (first name, last name, etc.)?
+    json_str = json.dumps(response.json()["data"])
+    resp = json.loads(json_str)
+    resp_2 = resp["query"]
+    resp_3 = resp_2["rows"]
+    print(json.dumps(resp_3[0]["FIRST_NAME"]))
 
+my_list2 = ["hysun"]
 
+hi = "hello"
 for i in my_list2:
-    get_members(i) #figure out how to input a list of names from the Google Sheet
+    hi = get_members(i) 
+

@@ -7,9 +7,13 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import json
+
+from pprint import pprint
+from googleapiclient import discovery
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'
@@ -55,9 +59,45 @@ def main():
         for row in values:
             # Print columns A and B
             print('%s, %s' % (row[0], row[1]))
+
+        
+        service = discovery.build('sheets', 'v4', credentials=creds)
+
+        # The ID of the spreadsheet to update.
+        spreadsheet_id = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'  # TODO: Update placeholder value.
+
+        # The A1 notation of the values to update.
+        range_ = 'A1:A2'  # TODO: Update placeholder value.
+
+        # How the input data should be interpreted.
+        value_input_option = 'USER_ENTERED'  # TODO: Update placeholder value.
+
+        value_range_body = {
+            "values": [
+                [
+                    "o"
+                ]
+            ]
+        }
+
+        request = service.spreadsheets().values().update(spreadsheetId=spreadsheet_id, range=range_, valueInputOption=value_input_option, body=value_range_body)
+    
+        response = request.execute()
+
+        # TODO: Change code below to process the `response` dict:
+        pprint(json.dumps(response))
+
+
     except HttpError as err:
         print(err)
+
+    
 
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
