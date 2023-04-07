@@ -84,7 +84,7 @@ def get_members(id1):
     #print(response.json())
 
     #cleaner format compared to one big list
-    print(json.dumps(response.json(), separators=(",",":"), indent=1))
+    print(json.dumps(response.json(), separators=(",",":"), indent=2))
 
 my_list2 = ["hysun"]
 
