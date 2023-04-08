@@ -21,8 +21,8 @@ from googleapiclient import discovery
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'
-SAMPLE_RANGE_NAME = '!A1:B'
+#SAMPLE_SPREADSHEET_ID = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'
+#SAMPLE_RANGE_NAME = '!A1:B'
 
 load_dotenv()
 
@@ -57,6 +57,54 @@ token = response.json()["access_token"]
 # The URL for the group members API endpoint is constructed using an f-string.
 # The Authorization header is set to include the access token in a Bearer token format.
 # The Accept header is set to "application/json" to indicate that the client expects a JSON response.
+def get_list(number_of_names):
+    """Shows basic usage of the Sheets API.
+    Prints values from a sample spreadsheet.
+    """
+    creds = None
+    # The file token.json stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
+    try:
+        service = build('sheets', 'v4', credentials=creds)
+
+        # Call the Sheets API
+        NEW_ID = '1Slbbj_JEttGTACe9tpHorcMWopRT5QvBTnt_guduNoc'
+        temp4 = str(number_of_names)
+        NEW_RANGE = 'A1:A' + temp4
+        sheet = service.spreadsheets()
+        result = sheet.values().get(spreadsheetId=NEW_ID,
+                                    range=NEW_RANGE).execute()
+        values = result.get('values')
+
+        if not values:
+            print('No data found.')
+            return
+
+        #print('Name:')
+        values_2 = []
+        for row in values:
+            #print('%s' % (row[0]))
+            values_2.append('%s' % (row[0]))
+        return values_2
+    except HttpError as err:
+        print(err)
+
+
 def get_members(id1, target):
     members_url = f"https://gw.api.it.umich.edu/um/studentrecords/Affiliation"
     headers = {
@@ -75,6 +123,7 @@ def get_members(id1, target):
     #print(json.dumps(response.json(), separators=(",",":"), indent=2))
 
     #accesses the relevant section of the API response (data in "rows")
+
     json_str = json.dumps(response.json()["data"])
     resp = json.loads(json_str)
     resp_2 = resp["query"]
@@ -104,12 +153,9 @@ def get_members(id1, target):
         case '7':
             return (json.dumps(resp_3[0]["PROGRAM"]))
 
-member_list = ["hysun", 
-            "yangjust", 
-            "jmfree"]
 
 
-def main(target):
+def main(target, number_of_names):
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
     """
@@ -138,22 +184,24 @@ def main(target):
         spreadsheet_id = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'  
 
         #Switch statement to determine which column to update
-        # The A1 notation of the values to update.
+        # notation of the values to update.
+        str_names = str(number_of_names + 1)
+
         match target:
             case '1':
-                range_ = 'A2:A4'
+                range_ = 'A2:A' + str_names
             case '2':
-                range_ = 'B2:B4'
+                range_ = 'B2:B' + str_names
             case '3':
-                range_ = 'C2:C4'
+                range_ = 'C2:C' + str_names
             case '4':
-                range_ = 'D2:D4'
+                range_ = 'D2:D' + str_names
             case '5':
-                range_ = 'E2:E4'
+                range_ = 'E2:E' + str_names
             case '6':
-                range_ = 'F2:F4'
+                range_ = 'F2:F' + str_names
             case '7':
-                range_ = 'G2:G4'
+                range_ = 'G2:G' + str_names
           
 
         # How the input data should be interpreted.
@@ -194,14 +242,20 @@ temp = ''.join((string1, string2, string3, string4,
 
 usr_input = input(temp)
 
+number_of_names = input("\nEnter Number of uniqnames to Request: ")
+number_of_names = int(number_of_names)
+
+member_list = get_list(number_of_names)
+print(member_list)
+
 if __name__ == '__main__':
     for i in member_list:
         input_list.append(str(get_members(i, usr_input)))
 
     #converts 1d array to 2d array to display result in different rows instead of columns
-    input_list = np.reshape((input_list), (3,1)).tolist()
-    #print(input_list)
-    main(usr_input)
+    input_list = np.reshape((input_list), (number_of_names,1)).tolist()
+    print(input_list)
+    main(usr_input, number_of_names)
 
 
 
