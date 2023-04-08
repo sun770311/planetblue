@@ -57,7 +57,7 @@ token = response.json()["access_token"]
 # The URL for the group members API endpoint is constructed using an f-string.
 # The Authorization header is set to include the access token in a Bearer token format.
 # The Accept header is set to "application/json" to indicate that the client expects a JSON response.
-def get_members(id1):
+def get_members(id1, target):
     members_url = f"https://gw.api.it.umich.edu/um/studentrecords/Affiliation"
     headers = {
         "Authorization": f"Bearer {token}",
@@ -74,19 +74,42 @@ def get_members(id1):
     #prints entire API response
     #print(json.dumps(response.json(), separators=(",",":"), indent=2))
 
-    #QUESTION: do we want to rewrite for every single piece of personal information (first name, last name, etc.)?
+    #accesses the relevant section of the API response (data in "rows")
     json_str = json.dumps(response.json()["data"])
     resp = json.loads(json_str)
     resp_2 = resp["query"]
     resp_3 = resp_2["rows"]
-    return (json.dumps(resp_3[0]["FIRST_NAME"]))
 
-my_list2 = ["hysun", 
+    #1. First Name
+    #2. Last Name
+    #3. Campus ID (uniqname)
+    #4. EMPLID (UMID)
+    #5. Typename (Active/Inactive/Never)
+    #6. Description (School Name)
+    #7. Program (Undergrad/Grad/PhD)
+
+    match target:
+        case '1':
+            return (json.dumps(resp_3[0]["FIRST_NAME"]))
+        case '2':
+            return (json.dumps(resp_3[0]["LAST_NAME"]))
+        case '3':
+            return (json.dumps(resp_3[0]["CAMPUS_ID"]))
+        case '4':
+            return (json.dumps(resp_3[0]["EMPLID"]))
+        case '5':
+            return (json.dumps(resp_3[0]["TYPENAME"]))
+        case '6':
+            return (json.dumps(resp_3[0]["DESCR"]))
+        case '7':
+            return (json.dumps(resp_3[0]["PROGRAM"]))
+
+member_list = ["hysun", 
             "yangjust", 
             "jmfree"]
 
 
-def main():
+def main(target):
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
     """
@@ -114,8 +137,24 @@ def main():
         # The ID of the spreadsheet to update.
         spreadsheet_id = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'  
 
+        #Switch statement to determine which column to update
         # The A1 notation of the values to update.
-        range_ = 'A1:A3'  
+        match target:
+            case '1':
+                range_ = 'A2:A4'
+            case '2':
+                range_ = 'B2:B4'
+            case '3':
+                range_ = 'C2:C4'
+            case '4':
+                range_ = 'D2:D4'
+            case '5':
+                range_ = 'E2:E4'
+            case '6':
+                range_ = 'F2:F4'
+            case '7':
+                range_ = 'G2:G4'
+          
 
         # How the input data should be interpreted.
         value_input_option = 'USER_ENTERED'  
@@ -123,7 +162,7 @@ def main():
 
         value_range_body = {
             "values": 
-                hi
+                input_list
             
         }
 
@@ -140,15 +179,29 @@ def main():
         print(err)
 
     
-hi = []
+input_list = [] 
+
+string1 = "Choose a number option:\n"
+string2 = "1. First Name\n"
+string3 = "2. Last Name\n"
+string4 = "3. Uniqname\n"
+string5 = "4. UMID\n"
+string6 = "5. Active Status\n"
+string7 = "6. School\n"
+string8 = "7. Program\n"
+temp = ''.join((string1, string2, string3, string4,
+                string5, string6, string7, string8))
+
+usr_input = input(temp)
 
 if __name__ == '__main__':
-    for i in my_list2:
-        hi.append(str(get_members(i)))
+    for i in member_list:
+        input_list.append(str(get_members(i, usr_input)))
 
-    hi = np.reshape(hi, (3,1)).tolist()
-    print(hi)
-    main()
+    #converts 1d array to 2d array to display result in different rows instead of columns
+    input_list = np.reshape((input_list), (3,1)).tolist()
+    #print(input_list)
+    main(usr_input)
 
 
 
