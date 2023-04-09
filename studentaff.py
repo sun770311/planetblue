@@ -3,7 +3,6 @@ from __future__ import print_function
 import os.path
 import json
 import numpy as np
-
 import requests
 import os
 import json
@@ -18,24 +17,13 @@ from googleapiclient.errors import HttpError
 from pprint import pprint
 from googleapiclient import discovery
 
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-# The ID and range of a sample spreadsheet.
-#SAMPLE_SPREADSHEET_ID = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'
-#SAMPLE_RANGE_NAME = '!A1:B'
-
 load_dotenv()
 
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-CLIENT_ID = os.getenv("CLIENT_ID")
+# Obtain CLIENT_ID and CLIENT_SECRET from .env file
+CLIENT_ID = os.getenv("CLIENT_ID") 
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-
-# This token is necessary for making requests to protected endpoints.
-# The grant_type parameter is set to "client_credentials" to indicate that we are using our own credentials.
-# The scope parameter is set to "mcommunitygroups" to specify which resource we want to access.
-# The auth parameter is set to a tuple containing the CLIENT_ID and CLIENT_SECRET variables to provide authentication credentials.
-print(CLIENT_ID)
-print(CLIENT_SECRET)
 
 response = requests.post(
     "https://gw.api.it.umich.edu/um/oauth2/token",
@@ -43,28 +31,12 @@ response = requests.post(
     auth=(CLIENT_ID, CLIENT_SECRET)
 )
 
-
-# The response.json() method is called on the response object to convert the response to a JSON format.
-# The access token is extracted from the JSON object using the key "access_token", and stored in the token variable.
 token = response.json()["access_token"]
 
-
-# The get_members(group) function gets the name of all the members
-# The get_members() function takes a single parameter group, which specifies the name of the group whose members are to be retrieved.
-
-
-# If you want to know in more detail, read below. If you don't understand what's written below, don't worry about it.
-# The URL for the group members API endpoint is constructed using an f-string.
-# The Authorization header is set to include the access token in a Bearer token format.
-# The Accept header is set to "application/json" to indicate that the client expects a JSON response.
-def get_list(number_of_names):
-    """Shows basic usage of the Sheets API.
-    Prints values from a sample spreadsheet.
-    """
+# get_list() returns a list of uniqnames from the PBA Google Spreadsheet
+def get_list(starting_point, number_of_names):
     creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
+
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
@@ -82,10 +54,11 @@ def get_list(number_of_names):
     try:
         service = build('sheets', 'v4', credentials=creds)
 
-        # Call the Sheets API
+        # Call the Sheets API 
         NEW_ID = '1Slbbj_JEttGTACe9tpHorcMWopRT5QvBTnt_guduNoc'
-        temp4 = str(number_of_names)
-        NEW_RANGE = 'A1:A' + temp4
+        start_point = str(starting_point)
+        num_names = str(number_of_names)
+        NEW_RANGE = 'A' + start_point + ':A' + num_names
         sheet = service.spreadsheets()
         result = sheet.values().get(spreadsheetId=NEW_ID,
                                     range=NEW_RANGE).execute()
@@ -95,17 +68,19 @@ def get_list(number_of_names):
             print('No data found.')
             return
 
-        #print('Name:')
-        values_2 = []
+        updated_list = []
         for row in values:
-            #print('%s' % (row[0]))
-            values_2.append('%s' % (row[0]))
-        return values_2
+            updated_list.append('%s' % (row[0]))
+
+        # returns the list with number of uniqnames specified
+        return updated_list
+    
     except HttpError as err:
         print(err)
 
 
-def get_members(id1, target):
+# get_affiliation() returns 1 of 7 details for a uniqname
+def get_affiliation(id1, target):
     members_url = f"https://gw.api.it.umich.edu/um/studentrecords/Affiliation"
     headers = {
         "Authorization": f"Bearer {token}",
@@ -114,16 +89,10 @@ def get_members(id1, target):
     parameters = {
         "prompt_fieldvalue": {id1}
     }
-# Finally, the requests.get() method is used to make a GET request to the group members API endpoint.
-# The headers dictionary is passed as an argument to provide the authorization and accept headers.
-# The response text is returned by the function.
+
     response = requests.get(members_url, headers = headers, params=parameters)
 
-    #prints entire API response
-    #print(json.dumps(response.json(), separators=(",",":"), indent=2))
-
     #accesses the relevant section of the API response (data in "rows")
-
     json_str = json.dumps(response.json()["data"])
     resp = json.loads(json_str)
     resp_2 = resp["query"]
@@ -154,18 +123,12 @@ def get_members(id1, target):
             return (json.dumps(resp_3[0]["PROGRAM"]))
 
 
-
-def main(target, number_of_names):
-    """Shows basic usage of the Sheets API.
-    Prints values from a sample spreadsheet.
-    """
+# main() writes the values returned from get_affiliation() to a spreadsheet 
+def main(target, start_row, end_row):
     creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
+    
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -173,7 +136,6 @@ def main(target, number_of_names):
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
@@ -183,33 +145,34 @@ def main(target, number_of_names):
         # The ID of the spreadsheet to update.
         spreadsheet_id = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'  
 
-        #Switch statement to determine which column to update
-        # notation of the values to update.
-        str_names = str(number_of_names + 1)
+        # First row to be updated
+        names_start = str(start_row + 1)
 
+        # Last row to be updated
+        names_end = str(start_row + end_row)
+
+        # Switch statement to determine which column to update
         match target:
             case '1':
-                range_ = 'A2:A' + str_names
+                range_ = 'A' + names_start + ':A' + names_end
             case '2':
-                range_ = 'B2:B' + str_names
+                range_ = 'B' + names_start + ':B' + names_end
             case '3':
-                range_ = 'C2:C' + str_names
+                range_ = 'C' + names_start + ':C' + names_end
             case '4':
-                range_ = 'D2:D' + str_names
+                range_ = 'D' + names_start + ':D' + names_end
             case '5':
-                range_ = 'E2:E' + str_names
+                range_ = 'E' + names_start + ':E' + names_end
             case '6':
-                range_ = 'F2:F' + str_names
+                range_ = 'F' + names_start + ':F' + names_end
             case '7':
-                range_ = 'G2:G' + str_names
+                range_ = 'G' + names_start + ':G' + names_end
           
-
-        # How the input data should be interpreted.
         value_input_option = 'USER_ENTERED'  
-
 
         value_range_body = {
             "values": 
+                # List we have modified using get_affiliation()
                 input_list
             
         }
@@ -226,9 +189,7 @@ def main(target, number_of_names):
     except HttpError as err:
         print(err)
 
-    
-input_list = [] 
-
+ 
 string1 = "Choose a number option:\n"
 string2 = "1. First Name\n"
 string3 = "2. Last Name\n"
@@ -240,22 +201,32 @@ string8 = "7. Program\n"
 temp = ''.join((string1, string2, string3, string4,
                 string5, string6, string7, string8))
 
+# Prompts the user to select 1 of the 7 possible personal data
 usr_input = input(temp)
 
+# Prompts the user to specify which row on the sheet of uniqnames to start at
+starting_point = input("\nEnter Row to Start At: ")
+starting_point = int(starting_point)
+
+# Prompts the user to specify how many uniqnames to request data for
 number_of_names = input("\nEnter Number of uniqnames to Request: ")
 number_of_names = int(number_of_names)
 
-member_list = get_list(number_of_names)
+difference = number_of_names - starting_point + 1
+
+member_list = get_list(starting_point, number_of_names)
 print(member_list)
 
+# List that we use to write to the Google Sheet
+input_list = []
 if __name__ == '__main__':
     for i in member_list:
-        input_list.append(str(get_members(i, usr_input)))
+        input_list.append(str(get_affiliation(i, usr_input)))
 
     #converts 1d array to 2d array to display result in different rows instead of columns
-    input_list = np.reshape((input_list), (number_of_names,1)).tolist()
+    input_list = np.reshape((input_list), (difference,1)).tolist()
     print(input_list)
-    main(usr_input, number_of_names)
+    main(usr_input, starting_point, number_of_names)
 
 
 
