@@ -209,6 +209,7 @@ starting_point = input("\nEnter Row to Start At: ")
 starting_point = int(starting_point)
 
 # Prompts the user to specify how many uniqnames to request data for
+# IMPORTANT: Student Affiliations API makes MAXIMUM 200 requests per MINUTE
 number_of_names = input("\nEnter Number of uniqnames to Request: ")
 number_of_names = int(number_of_names)
 
