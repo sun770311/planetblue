@@ -209,7 +209,7 @@ starting_point = input("\nEnter Index of Starting Row: ")
 starting_point = int(starting_point)
 
 # Prompts the user to specify ending row
-# IMPORTANT: Student Affiliations API makes MAXIMUM 200 requests per MINUTE
+print("IMPORTANT: Student Affiliations API makes MAXIMUM 200 requests per MINUTE")
 end_point = input("\nEnter Index of Last Row: ")
 end_point = int(end_point)
 
@@ -225,9 +225,11 @@ if __name__ == '__main__':
     for i in member_list:
         input_list.append(str(get_affiliation(i, usr_input)))
 
-    #converts 1d array to 2d array to display result in different rows instead of columns
+    # converts 1d array to 2d array to display result in different rows instead of columns
     input_list = np.reshape((input_list), (difference, 1)).tolist()
     print(input_list)
+
+    # writes to google sheet
     main(usr_input, starting_point, end_point)
 
 
