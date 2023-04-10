@@ -34,7 +34,7 @@ response = requests.post(
 token = response.json()["access_token"]
 
 # get_list() returns a list of uniqnames from the PBA Google Spreadsheet
-def get_list(starting_point, number_of_names):
+def get_list(starting_point, end_point):
     creds = None
 
     if os.path.exists('token.json'):
@@ -57,7 +57,7 @@ def get_list(starting_point, number_of_names):
         # Call the Sheets API 
         NEW_ID = '1Slbbj_JEttGTACe9tpHorcMWopRT5QvBTnt_guduNoc'
         start_point = str(starting_point)
-        num_names = str(number_of_names)
+        num_names = str(end_point)
         NEW_RANGE = 'A' + start_point + ':A' + num_names
         sheet = service.spreadsheets()
         result = sheet.values().get(spreadsheetId=NEW_ID,
@@ -205,29 +205,30 @@ temp = ''.join((string1, string2, string3, string4,
 usr_input = input(temp)
 
 # Prompts the user to specify which row on the sheet of uniqnames to start at
-starting_point = input("\nEnter Row to Start At: ")
+starting_point = input("\nEnter Index of Starting Row: ")
 starting_point = int(starting_point)
 
-# Prompts the user to specify how many uniqnames to request data for
+# Prompts the user to specify ending row
 # IMPORTANT: Student Affiliations API makes MAXIMUM 200 requests per MINUTE
-number_of_names = input("\nEnter Number of uniqnames to Request: ")
-number_of_names = int(number_of_names)
+end_point = input("\nEnter Index of Last Row: ")
+end_point = int(end_point)
 
-difference = number_of_names - starting_point + 1
+difference = end_point - starting_point + 1
 
-member_list = get_list(starting_point, number_of_names)
+member_list = get_list(starting_point, end_point)
 print(member_list)
 
-# List that we use to write to the Google Sheet
 input_list = []
+
+# List that we use to write to the Google Sheet
 if __name__ == '__main__':
     for i in member_list:
         input_list.append(str(get_affiliation(i, usr_input)))
 
     #converts 1d array to 2d array to display result in different rows instead of columns
-    input_list = np.reshape((input_list), (difference,1)).tolist()
+    input_list = np.reshape((input_list), (difference, 1)).tolist()
     print(input_list)
-    main(usr_input, starting_point, number_of_names)
+    main(usr_input, starting_point, end_point)
 
 
 
