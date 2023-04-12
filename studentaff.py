@@ -106,6 +106,10 @@ def get_affiliation(id1, target):
     #6. Description (School Name)
     #7. Program (Undergrad/Grad/PhD)
 
+    # Makes it easy to locate invalid uniqnames 
+    if (resp_3 == []):
+       return "DOESNOTEXIST"    
+    
     match target:
         case '1':
             return (json.dumps(resp_3[0]["FIRST_NAME"]))
