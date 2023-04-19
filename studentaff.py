@@ -205,7 +205,16 @@ string8 = "7. Program\n"
 temp = ''.join((string1, string2, string3, string4,
                 string5, string6, string7, string8))
 
+
 # Prompts the user to select 1 of the 7 possible personal data
+    #1. First Name
+    #2. Last Name
+    #3. Campus ID (uniqname)
+    #4. EMPLID (UMID)
+    #5. Typename (Active/Inactive/Never)
+    #6. Description (School Name)
+    #7. Program (Undergrad/Grad/PhD)
+
 usr_input = input(temp)
 
 # Prompts the user to specify which row on the sheet of uniqnames to start at
