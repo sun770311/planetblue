@@ -54,7 +54,7 @@ def get_list(starting_point, end_point):
     try:
         service = build('sheets', 'v4', credentials=creds)
 
-        # Call the Sheets API 
+        # Call the Sheets API (Google Sheet to read from)
         NEW_ID = '1Slbbj_JEttGTACe9tpHorcMWopRT5QvBTnt_guduNoc'
         start_point = str(starting_point)
         num_names = str(end_point)
@@ -106,7 +106,7 @@ def get_affiliation(id1, target):
     #6. Description (School Name)
     #7. Program (Undergrad/Grad/PhD)
 
-    # Makes it easy to locate invalid uniqnames 
+    # Replaces invalid uniqname results with 'DOESNOTEXIST'
     if (resp_3 == []):
        return "DOESNOTEXIST"    
     
@@ -149,7 +149,7 @@ def main(target, start_row, end_row):
         # The ID of the spreadsheet to update.
         spreadsheet_id = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'  
 
-        # First row to be updated
+        # First row to be updated (all rows shifted down by 1 due to headers)
         names_start = str(start_row + 1)
 
         # Last row to be updated
