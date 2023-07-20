@@ -57,7 +57,7 @@ def get_list(starting_point, end_point):
         service = build('sheets', 'v4', credentials=creds)
 
         # Call the Sheets API to read from the target Google Sheet
-        NEW_ID = '1Slbbj_JEttGTACe9tpHorcMWopRT5QvBTnt_guduNoc'
+        NEW_ID = 'SHEET_TO_READ_FROM'
         start_point = str(starting_point)
         num_names = str(end_point)
         NEW_RANGE = 'A' + start_point + ':A' + num_names
@@ -149,7 +149,7 @@ def main(target, start_row, end_row):
         service = discovery.build('sheets', 'v4', credentials=creds)
 
         # The ID of the spreadsheet to update.
-        spreadsheet_id = '1Nubu0jvhPI1nNYZt8XuZnuTZjhmIT4flz3QR0AZwrU8'  
+        spreadsheet_id = 'SHEET_TO_WRITE_TO'  
 
         # First row to be updated (all rows shifted down by 1 due to headers)
         names_start = str(start_row + 1)
