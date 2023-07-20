@@ -33,12 +33,14 @@ response = requests.post(
 
 token = response.json()["access_token"]
 
+
 # get_list() returns a list of uniqnames from the PBA Google Spreadsheet
 def get_list(starting_point, end_point):
     creds = None
 
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -54,7 +56,7 @@ def get_list(starting_point, end_point):
     try:
         service = build('sheets', 'v4', credentials=creds)
 
-        # Call the Sheets API (Google Sheet to read from)
+        # Call the Sheets API to read from the target Google Sheet
         NEW_ID = '1Slbbj_JEttGTACe9tpHorcMWopRT5QvBTnt_guduNoc'
         start_point = str(starting_point)
         num_names = str(end_point)
@@ -79,7 +81,7 @@ def get_list(starting_point, end_point):
         print(err)
 
 
-# get_affiliation() returns 1 of 7 details for a uniqname
+# get_affiliation() returns 1 of 7 selectable details for a uniqname
 def get_affiliation(id1, target):
     members_url = f"https://gw.api.it.umich.edu/um/studentrecords/Affiliation"
     headers = {
