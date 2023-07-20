@@ -9,7 +9,7 @@ hysun@umich.edu
 <br />
      
 ## Restrictions  
-For student and faculty privacy reasons, the .env file containing Client ID and Secret is not attached.   
+For student and faculty privacy reasons, the .env file containing Client ID and Secret is empty.   
 Links to the Google Sheets to read from and write to are also not included.   
 To authorize Google API credentials for a desktop application, follow [these instructions](https://developers.google.com/sheets/api/quickstart/python) to generate credentials.json.
 
