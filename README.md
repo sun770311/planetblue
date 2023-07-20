@@ -3,7 +3,7 @@ Hannah Sun
 hysun@umich.edu  
   
 ## Goals
-* Extract data from University of Michigan's MCommunity to update the existing Planet Blue Ambassador  
+* Extract data from University of Michigan's MCommunity to update the existing but incomplete Planet Blue Ambassador  
 (PBA) database in Google Sheets.   
 * Analyze data for campus distribution of PBAs to determine target audiences for future Planet Blue campaigns    
 <br />
@@ -31,10 +31,14 @@ __Please contact the API Directory Team to request access to restricted Universi
 
 ## Instructions
 1. Select personal data to retrieve by indicating a number from 1 to 7 (corresponding to the 7 student credentials listed above)   
-2. Specify first row number   
-3. Specify last row number   
+2. Specify first row number in Google Sheet with PBA uniqnames to read as StudentAffiliation input   
+3. Specify last row number to read   
     
-(**Warning: Student Affiliations API makes maximum 200 requests per minute**)     
+(**Warning: Student Affiliations API makes maximum 200 requests per minute**) 
+<br />
+
+## Adaptability
+This project serves as a template for combining Google Sheets APIs with other types of University of Michigan APIs (MCommunityGroups, EmpJobDesc, etc.) to update database records based on uniqname and UMID.
       
 <br />
 <br />
