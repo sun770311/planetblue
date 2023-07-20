@@ -6,14 +6,16 @@ hysun@umich.edu
 * Extract data from University of Michigan's MCommunity to update the existing Planet Blue Ambassador  
 (PBA) database in Google Sheets.   
 * Analyze data for campus distribution of PBAs to determine target audiences for future Planet Blue campaigns    
-    
+<br />
      
 ## Restrictions  
 For student and faculty privacy reasons, the .env file containing Client ID and Secret is not attached.   
 Links to the Google Sheets to read from and write to are also not included.   
-__Please contact the API Directory Team to request access to restricted University of Michigan APIs.__
-     
+To authorize Google API credentials for a desktop application, follow [these instructions](https://developers.google.com/sheets/api/quickstart/python) to generate credentials.json.
 
+__Please contact the API Directory Team to request access to restricted University of Michigan APIs.__   
+<br />
+   
 ## APIs 
 * [Student Affiliation API](https://dir.api.it.umich.edu/docs/studentrecords/1/overview): University of Michigan API that takes in a uniqname/UMID number and returns
     a student's:
@@ -25,7 +27,8 @@ __Please contact the API Directory Team to request access to restricted Universi
     6. School (LSA, COE, etc.)
     7. Program (Undergraduate/Graduate)  
 * [Google Sheets API](https://developers.google.com/sheets/api/guides/values#python): Reads & writes to a range of cell values     
-      
+<br />
+
 ## Instructions
 1. Select personal data to retrieve by indicating a number from 1 to 7 (corresponding to the 7 student credentials listed above)   
 2. Specify first row number   
