@@ -36,6 +36,7 @@ __Please contact the API Directory Team to request access to restricted Universi
     
 (**Warning: Student Affiliations API makes maximum 200 requests per minute**) 
 <br />
+<br />
 
 ## Adaptability
 This project serves as a template for combining Google Sheets APIs with other types of University of Michigan APIs (MCommunityGroups, EmpJobDesc, etc.) to update database records based on uniqname and UMID.
