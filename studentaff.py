@@ -18,10 +18,9 @@ from pprint import pprint
 from googleapiclient import discovery
 
 load_dotenv()
-
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-# Obtain CLIENT_ID and CLIENT_SECRET from .env file
+# from .env file
 CLIENT_ID = os.getenv("CLIENT_ID") 
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
@@ -30,16 +29,13 @@ response = requests.post(
     data={"grant_type": "client_credentials", "scope": "studentaffiliation"},
     auth=(CLIENT_ID, CLIENT_SECRET)
 )
-
 token = response.json()["access_token"]
 
 
-# get_list() returns a list of uniqnames from the PBA Google Spreadsheet
+# returns list of uniqnames from PBA Google Spreadsheet
 def get_list(starting_point, end_point):
     creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
+    # token.json stores user's access and refresh tokens, created automatically during first complete authorization 
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
 
@@ -58,7 +54,7 @@ def get_list(starting_point, end_point):
     try:
         service = build('sheets', 'v4', credentials=creds)
 
-        # Call the Sheets API to read from the target Google Sheet
+        # Call the Sheets API to read from Google Sheet
         NEW_ID = 'SHEET_TO_READ_FROM'
         start_point = str(starting_point)
         num_names = str(end_point)
@@ -83,7 +79,7 @@ def get_list(starting_point, end_point):
         print(err)
 
 
-# get_affiliation() returns 1 of 7 selectable details for a uniqname
+# returns 1 of 7 selectable details for a uniqname
 def get_affiliation(id1, target):
     members_url = f"https://gw.api.it.umich.edu/um/studentrecords/Affiliation"
     headers = {
@@ -131,7 +127,7 @@ def get_affiliation(id1, target):
             return (json.dumps(resp_3[0]["PROGRAM"]))
 
 
-# main() writes the values returned from get_affiliation() to a spreadsheet 
+# writes credentials returned above to a spreadsheet 
 def main(target, start_row, end_row):
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is

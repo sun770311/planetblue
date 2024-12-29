@@ -3,8 +3,10 @@ Hannah Sun
 hysun@umich.edu  
   
 ## Goals
-* Extract data from University of Michigan's MCommunity to update the existing but incomplete Planet Blue Ambassador  
-(PBA) database in Google Sheets.   
+* Extract data from University of Michigan's MCommunity to update the U-M Planet Blue Ambassador (PBA) database.   
+    * Read from a Google Sheet to retrieve uniqnames by row number
+    * Request affiliation data for each uniqname
+    * Write extracted credentials to output spreadsheet
 * Analyze data for campus distribution of PBAs to determine target audiences for future Planet Blue campaigns    
 <br />
      
@@ -26,13 +28,13 @@ __Please contact the API Directory Team to request access to restricted Universi
     5. Activity Status (Active, Inactive, Never a Student)
     6. School (LSA, COE, etc.)
     7. Program (Undergraduate/Graduate)  
-* [Google Sheets API](https://developers.google.com/sheets/api/guides/values#python): Reads & writes to a range of cell values     
+* [Google Sheets API](https://developers.google.com/sheets/api/guides/values#python): Read & write to a range of cell values     
 <br />
 
 ## Instructions
-1. Select personal data to retrieve by indicating a number from 1 to 7 (corresponding to the 7 student credentials listed above)   
-2. Specify first row number in Google Sheet with PBA uniqnames to read as StudentAffiliation input   
-3. Specify last row number to read   
+1. Select personal data to retrieve by indicating a number from 1 to 7 (corresponding to the 7 credential types listed above)   
+2. Specify first row number in the Google Sheet with PBA uniqnames to read (Student Affiliation API input)  
+3. Specify last row number to read (Student Affiliation API input)  
     
 (**Warning: Student Affiliations API makes maximum 200 requests per minute**) 
 <br />
